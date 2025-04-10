@@ -1,0 +1,9 @@
+.App{
+background-color: whitesmoke;
+}
+
+.signInForm{
+    border: 2px solid rgba(245, 245, 245, 0.25);
+    border-radius: 15px;
+    box-shadow: 2px 2px 4px rgb(38, 38, 71);
+}
