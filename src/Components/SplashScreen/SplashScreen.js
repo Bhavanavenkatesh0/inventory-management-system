@@ -1,10 +1,16 @@
 import { React, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from '../../res/images/logo.svg'
-import heroImage from '../../res/images/HeroImage.svg'
+import logo from '../../assets/images/logo.svg'
+import heroImage from '../../assets/images/HeroImage.png'
 
 const SplashScreen = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = heroImage;
+  }, []);
+
 
   useEffect(() => {
     const timer = setTimeout(() => {
