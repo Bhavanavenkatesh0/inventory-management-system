@@ -1,0 +1,424 @@
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import logo from '../../../assets/images/LogoSquare.svg'
+import { ChevronLeft, LogOutIcon } from 'lucide-react';
+import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
+import InsightsIcon from '@mui/icons-material/Insights';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import SettingsIcon from '@mui/icons-material/Settings';
+import WarehouseIcon from '@mui/icons-material/Warehouse';
+import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
+import Person4Icon from '@mui/icons-material/Person4';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import PaymentsIcon from '@mui/icons-material/Payments';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import DonutSmallIcon from '@mui/icons-material/DonutSmall';
+import { styled, Tooltip, tooltipClasses } from '@mui/material';
+import WorkForceManagement from './WorkForceManagement';
+import { getDatabase, ref, onValue } from "firebase/database";
+import InventoryManagement from './InventoryManagement';
+
+
+const Dashboard = () => {
+
+    const role = localStorage.getItem("userRole");
+    const username = localStorage.getItem("userName");
+    const userid = localStorage.getItem("userID");
+
+    const [profilePic, setProfilePic] = useState("");
+
+    useEffect(() => {
+        const db = getDatabase();
+        const userRef = ref(db, `users/${userid}`); // Adjust path if needed
+
+        const unsubscribe = onValue(userRef, (snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+
+                // If profile_pic is base64 encoded string (without prefix)
+                if (data.profile_pic) {
+                    const base64Image = `${data.profile_pic}`;
+                    setProfilePic(base64Image);
+                } else {
+                    setProfilePic("/default-avatar.png"); // fallback image
+                }
+            }
+        });
+
+        return () => unsubscribe();
+    }, [userid]);
+
+    const navigate = useNavigate();
+
+    const [open, setOpen] = useState(true);
+    const [fullyExpanded, setFullyExpanded] = useState(false);
+    const [listItemFullyExpanded, setListItemFullyExpanded] = useState(false);
+
+    const [expandedMenu, setExpandedMenu] = useState(() => localStorage.getItem("expandedMenu") || null);
+    const [selectedMenu, setSelectedMenu] = useState(() => {
+        return localStorage.getItem("selectedMenu") || "Dashboard";
+    });
+
+    useEffect(() => {
+        if (!localStorage.getItem("selectedMenu")) {
+            localStorage.setItem("selectedMenu", "Dashboard");
+        }
+    }, []);
+
+    const toggleMenu = (menuTitle) => {
+        setExpandedMenu((prevTitle) => (prevTitle === menuTitle ? null : menuTitle));
+        localStorage.setItem("expandedMenu", menuTitle);
+    };
+
+
+    const handleItemClick = (itemTitle) => {
+        setSelectedMenu(itemTitle); // Update selected item
+        localStorage.setItem("selectedMenu", itemTitle); // Persist selected item
+
+        // Check if the item is not part of a dropdown (main menu with sub-items)
+        const isDropdownItem = Menus.some((menu) =>
+            menu.subItems && menu.subItems.some((subItem) => subItem.title === itemTitle)
+        );
+
+        if (!isDropdownItem) {
+            // If the item is NOT a dropdown option, clear the expanded menu
+            setExpandedMenu(null);
+            localStorage.removeItem("expandedMenu");
+        }
+    };
+
+    useEffect(() => {
+        localStorage.setItem("selectedMenu", selectedMenu);
+    }, [selectedMenu]);
+
+    // Check login status
+    useEffect(() => {
+        const loggedIn = localStorage.getItem("isLoggedIn");
+        if (loggedIn !== "true") {
+            navigate("/signin");
+        }
+    }, [navigate]);
+
+    // Track when the sidebar expansion animation ends
+    useEffect(() => {
+        if (open) {
+            const timer = setTimeout(() => setListItemFullyExpanded(true), 50); // 200ms matches the `duration-300` class
+            return () => clearTimeout(timer);
+        } else {
+            setListItemFullyExpanded(false);
+        }
+    }, [open]);
+
+    useEffect(() => {
+        if (open) {
+            const timer = setTimeout(() => setFullyExpanded(true), 200); // 200ms matches the `duration-300` class
+            return () => clearTimeout(timer);
+        } else {
+            setFullyExpanded(false);
+        }
+    }, [open]);
+
+    const LightTooltip = styled(({ className, ...props }) => (
+        <Tooltip {...props} classes={{ popper: className }} />
+    ))(({ theme }) => ({
+        [`& .${tooltipClasses.tooltip}`]: {
+            backgroundColor: "#004385",
+            color: '#ffffff',
+            boxShadow: theme.shadows[1],
+            fontSize: 12,
+        },
+    }));
+
+    // Logout handler
+    const handleLogout = () => {
+        localStorage.clear();
+        navigate("/signin");
+    };
+
+    const Menus = [
+        {
+            title: "Dashboard",
+            Icon: DashboardIcon,
+            subItems: []
+        },
+        {
+            title: "Workforce Management",
+            Icon: SupervisedUserCircleIcon,
+            subItems: []
+        },
+        {
+            title: "Inventory Management",
+            Icon: WarehouseIcon,
+            subItems: []
+        },
+        {
+            title: "Sales & Billing",
+            Icon: RequestQuoteIcon,
+            subItems: [
+                { title: "Sales", Icon: MonetizationOnIcon },
+                { title: "Customers", Icon: Person4Icon },
+                { title: "Billing", Icon: ReceiptLongIcon },
+                { title: "Payments", Icon: PaymentsIcon }
+            ]
+        },
+        {
+            title: "Reporting & Analytics",
+            Icon: InsightsIcon,
+            subItems: [
+                { title: "Sales Report", Icon: DonutSmallIcon },
+                { title: "Inventory Stats", Icon: AnalyticsIcon }
+            ]
+        },
+        {
+            title: "Settings",
+            Icon: SettingsIcon,
+            subItems: []
+        }
+    ];
+
+    const renderContent = () => {
+        switch (selectedMenu) {
+            case "Dashboard":
+                return (
+                    <div>
+                        <h1>Welcome to the Dashboard</h1>
+                    </div>
+                );
+            case "Workforce Management":
+                return (
+                    <WorkForceManagement />
+                );
+            case "Inventory Management":
+                return (
+                    <div>
+                        <InventoryManagement />
+                    </div>
+                );
+            case "Suppliers":
+                return (
+                    <div>
+                        <h1>Manage your Suppliers here</h1>
+                    </div>
+                );
+            case "Purchase Orders":
+                return (
+                    <div>
+                        <h1>Manage your Orders here</h1>
+                    </div>
+                );
+            case "Stock Alerts":
+                return (
+                    <div>
+                        <h1>View Stock Alerts</h1>
+                    </div>
+                );
+            case "Categories":
+                return (
+                    <div>
+                        <h1>Organize distinct categories</h1>
+                    </div>
+                );
+            case "Sales":
+                return (
+                    <div>
+                        <h1>Manage Sales</h1>
+                    </div>
+                );
+            case "Customers":
+                return (
+                    <div>
+                        <h1>Manage Customers</h1>
+                    </div>
+                );
+            case "Billing":
+                return (
+                    <div>
+                        <h1>Manage Billings</h1>
+                    </div>
+                );
+            case "Payments":
+                return (
+                    <div>
+                        <h1>Manage Payments</h1>
+                    </div>
+                );
+            case "Sales Report":
+                return (
+                    <div>
+                        <h1>Manage Sales Reports</h1>
+                    </div>
+                );
+            case "Inventory Stats":
+                return (
+                    <div>
+                        <h1>Manage Inventory Stats</h1>
+                    </div>
+                );
+            case "Settings":
+                return (
+                    <div>
+                        <h1>Change your Settings</h1>
+                    </div>
+                );
+            default:
+                return (
+                    <div>
+                        <h1>Welcome!</h1>
+                    </div>
+                );
+        }
+    };
+
+    return (
+        <div className='flex'>
+            <div className={`${open ? "w-72 pl-4 pt-8" : "w-20 pl-4 pt-8"}  duration-300 h-screen relative`} style={{ backgroundColor: "#031A6B" }}>
+                <ChevronLeft
+                    className={`absolute cursor-pointer bg-white rounded-full -right-3 top-9 w-7 h-7 border-2
+                        ${!open && "rotate-180"}`}
+                    style={{ border: "1px outset #05B2DC", color: "031A6B" }}
+                    onClick={() => setOpen(!open)} />
+                <div className='flex items-baseline gap-x-2'>
+                    <img src={logo} alt='' width="36px" height="36px"
+                        className={`cursor-pointer duration-500 ${open && "rotate-[360deg]"} `} />
+                    <h1 className={`text-white origin-left whitespace-nowrap font-light text-3xl duration-300 ${!open && "scale-0"}`}>Marble & Might</h1>
+                </div>
+
+                <ul className="pt-2 pr-4 pl-0 flex flex-col justify-start">
+                    {Menus.map((menu, index) => (
+                        <React.Fragment key={index}>
+                            {/* Main Menu Item */}
+                            {!open ? (
+                                <LightTooltip title={menu.title} placement='right'
+                                    slotProps={{
+                                        popper: {
+                                            sx: {
+                                                [`&.${tooltipClasses.popper}[data-popper-placement*="right"] .${tooltipClasses.tooltip}`]:
+                                                {
+                                                    marginLeft: '20px',
+                                                },
+                                            },
+                                        },
+                                    }}
+                                    disableInteractive>
+                                    <li
+                                        onClick={() => {
+                                            if (menu.subItems.length > 0) {
+                                                // Toggle dropdown if it has sub-items
+                                                toggleMenu(menu.title);
+                                            } else {
+                                                // Directly handle selection for non-dropdown items
+                                                handleItemClick(menu.title);
+                                            }
+                                        }}
+                                        className={`text-gray-300 text-sm flex items-center justify-start whitespace-nowrap duration-200 origin-left gap-x-4 cursor-pointer py-1 px-2
+                hover:bg-light-white rounded-md mt-2 ${selectedMenu === menu.title ? "bg-light-white" : ""}`}
+                                    >
+                                        <menu.Icon />
+                                        {listItemFullyExpanded && (
+                                            <span className={`${!open && "hidden"} origin-left duration-200 ${!open && "scale-0"}`}>
+                                                {menu.title}
+                                            </span>
+                                        )}
+                                    </li>
+                                </LightTooltip>
+                            ) : (
+                                <li
+                                    onClick={() => {
+                                        if (menu.subItems.length > 0) {
+                                            // Toggle dropdown if it has sub-items
+                                            toggleMenu(menu.title);
+                                        } else {
+                                            // Directly handle selection for non-dropdown items
+                                            handleItemClick(menu.title);
+                                        }
+                                    }}
+                                    className={`text-gray-300 text-sm flex items-center justify-start whitespace-nowrap duration-200 origin-left gap-x-4 cursor-pointer py-1 px-2
+                hover:bg-light-white rounded-md mt-2 ${selectedMenu === menu.title ? "bg-light-white" : ""}`}
+                                >
+                                    <menu.Icon />
+                                    {listItemFullyExpanded && (
+                                        <span className={`${!open && "hidden"} origin-left duration-200 ${!open && "scale-0"}`}>
+                                            {menu.title}
+                                        </span>
+                                    )}
+                                </li>
+                            )}
+
+
+                            {/* Sub-Menu Items */}
+                            {menu.subItems.length > 0 && expandedMenu === menu.title && (
+                                <ul className={`${menu.subItems.length > 0 ? "-ml-5" : ""}`}>
+                                    {menu.subItems.map((subItem, subIndex) => (
+                                        !open ? (
+                                            <LightTooltip title={subItem.title} placement='right'
+                                                slotProps={{
+                                                    popper: {
+                                                        sx: {
+                                                            [`&.${tooltipClasses.popper}[data-popper-placement*="right"] .${tooltipClasses.tooltip}`]:
+                                                            {
+                                                                marginLeft: '20px',
+                                                            },
+                                                        },
+                                                    },
+                                                }}
+                                                disableInteractive>
+                                                <li
+                                                    key={subIndex}
+                                                    onClick={() => handleItemClick(subItem.title)} // Only update selectedMenu
+                                                    className={`text-gray-300 text-sm flex items-center gap-x-4 cursor-pointer py-1 px-2 mt-2 whitespace-nowrap duration-200 origin-left
+                                hover:text-white hover:bg-light-white rounded-md ${selectedMenu === subItem.title ? "bg-light-white" : ""}`}
+                                                >
+                                                    <subItem.Icon />
+                                                    {listItemFullyExpanded && (
+                                                        <span className={`${!open && "hidden"} origin-left duration-200 ${!open && "scale-0"}`}>
+                                                            {subItem.title}
+                                                        </span>
+                                                    )}
+                                                </li>
+                                            </LightTooltip>
+                                        ) : (
+                                            <li
+                                                key={subIndex}
+                                                onClick={() => handleItemClick(subItem.title)} // Only update selectedMenu
+                                                className={`text-gray-300 text-sm flex items-center gap-x-4 cursor-pointer py-1 px-2 mt-2 whitespace-nowrap duration-200 origin-left
+                                hover:text-white hover:bg-light-white rounded-md ${selectedMenu === subItem.title ? "bg-light-white" : ""}`}
+                                            >
+                                                <subItem.Icon />
+                                                {listItemFullyExpanded && (
+                                                    <span className={`${!open && "hidden"} origin-left duration-200 ${!open && "scale-0"}`}>
+                                                        {subItem.title}
+                                                    </span>
+                                                )}
+                                            </li>
+                                        )
+
+                                    ))}
+                                </ul>
+                            )}
+                        </React.Fragment>
+                    ))}
+                </ul>
+
+                <div className='absolute bottom-4 left-4 text-white flex items-center justify-start w-64 gap-x-3'>
+                    <img src={profilePic}
+                        className={`rounded-md w-12 border-2`} alt={username} />
+                    <div className={`${!open && "hidden"} flex items-center justify-between w-full origin-left duration-200 `}>
+                        <div>
+                            <p className='text-lg font-normal p-0 m-0'>{username}</p>
+                            <p className='text-sm font-light p-0 m-0'>{role === "Admin" ? "Administrator" : "Manager"}</p>
+                        </div>
+                        {fullyExpanded && (
+                            <LogOutIcon onClick={handleLogout} className='border-2 rounded-md h-10 w-10 p-2 cursor-pointer origin-left duration-200' style={{ background: "#004385" }} />
+                        )}
+                    </div>
+                </div>
+            </div>
+            <div className='contentContainer p-7 text-2xl fw-semibold flex-1 h-screen'>
+                {renderContent()}
+            </div>
+        </div>
+    );
+}
+
+export default Dashboard;

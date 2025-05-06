@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { firestore } from '../../firebase';
+import { getDatabase, ref, get, child } from 'firebase/database';
 import { Button, IconButton, InputAdornment, Snackbar, TextField } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
@@ -43,38 +42,54 @@ const SignIn = () => {
   const handleSignIn = async (e) => {
     e.preventDefault();
 
+    if (!email || !password) {
+      setToast({
+        open: true,
+        message: "Please enter valid credentials.!",
+        severity: "error"
+      });
+      return;
+    }
+
     try {
-      const usersRef = collection(firestore, "users");
-      const q = query(usersRef, where("email", "==", email), where("password", "==", password));
-      const querySnapshot = await getDocs(q);
 
-      if (!querySnapshot.empty) {
-        const userData = querySnapshot.docs[0].data();
-        const sessionId = crypto.randomUUID();  // 🔑 Unique session ID
-        // Credentials matched
-        // Save session details to localStorage
-        localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("sessionId", sessionId);
-        localStorage.setItem("userRole", userData.role); // e.g., "admin"
-        localStorage.setItem("userEmail", userData.email); // optional
-        localStorage.setItem("userName", userData.username); // optional
+      const db = getDatabase();
+      const dbRef = ref(db);
 
-        setToast({
-          open: true,
-          message: "Sign in Successful.!",
-          severity: "success"
-        });
-        setTimeout(() => navigate("/dashboard"), 1000);
-      } else if (email === "" || password === "") {
-        setToast({
-          open: true,
-          message: "Please enter valid credentials.!",
-          severity: "error"
-        });
+      const snapshot = await get(child(dbRef, 'users'));
+
+
+      if (snapshot.exists()) {
+        const users = snapshot.val();
+        const userEntry = Object.values(users).find(user => user.email === email && user.password === password);
+
+        if (userEntry) {
+          const sessionId = crypto.randomUUID();
+
+          localStorage.setItem("isLoggedIn", "true");
+          localStorage.setItem("sessionId", sessionId);
+          localStorage.setItem("userRole", userEntry.role);
+          localStorage.setItem("userEmail", userEntry.email);
+          localStorage.setItem("userName", userEntry.username);
+          localStorage.setItem("userID", userEntry.id);
+
+          setToast({
+            open: true,
+            message: "Sign in Successful.!",
+            severity: "success"
+          });
+          setTimeout(() => navigate("/dashboard"), 1000);
+        } else {
+          setToast({
+            open: true,
+            message: "Invalid email and password.!",
+            severity: "error"
+          });
+        }
       } else {
         setToast({
           open: true,
-          message: "Invalid email and password.!",
+          message: "No users found in database.",
           severity: "error"
         });
       }
