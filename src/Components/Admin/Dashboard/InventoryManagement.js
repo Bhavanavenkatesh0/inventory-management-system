@@ -68,7 +68,7 @@ const InventoryManagement = () => {
     };
 
 
-    const handleAddCategory = () => {
+    const handleAddItem = () => {
         if (!itemName || !selectedImage || !itemColor || !itemOrigin || !itemApperance || !slabThickness || !slabSize || !comnApplication || !itemQty) {
             alert("Please provide a proper item details.");
             return;
@@ -77,7 +77,7 @@ const InventoryManagement = () => {
         const generatedId = generateCategoryId();
         const timeStamp = dayjs().tz("Asia/Kolkata").format("DD MMMM YYYY [at] HH:mm:ss [UTC+5:30]");
 
-        const categoryData = {
+        const itemData = {
             id: generatedId,
             itemName: itemName,
             itemColor: itemColor,
@@ -92,9 +92,9 @@ const InventoryManagement = () => {
             created_time: timeStamp
         };
 
-        const categoryRef = ref(database, `items/${generatedId}`);
+        const itemRef = ref(database, `items/${generatedId}`);
 
-        set(categoryRef, categoryData)
+        set(itemRef, itemData)
             .then(() => {
                 alert("Item added successfully.");
                 setitemName("");
@@ -111,6 +111,39 @@ const InventoryManagement = () => {
             .catch((error) => {
                 console.error("Error adding item:", error);
                 alert("Failed to add item.");
+            });
+    };
+
+
+    const [categoryName, setCategoryName] = useState("");
+
+    const handleAddCategory = () => {
+        if (!categoryName || !selectedImage) {
+            alert("Please provide a proper category details.");
+            return;
+        }
+
+        const generatedId = generateCategoryId();
+        const timeStamp = dayjs().tz("Asia/Kolkata").format("DD MMMM YYYY [at] HH:mm:ss [UTC+5:30]");
+
+        const categoryData = {
+            id: generatedId,
+            categoryName: categoryName,
+            image: selectedImage,
+            created_time: timeStamp
+        };
+
+        const categoryRef = ref(database, `categories/${generatedId}`);
+
+        set(categoryRef, categoryData)
+            .then(() => {
+                alert("Category added successfully.");
+                setCategoryName("");
+                setSelectedImage(null);
+            })
+            .catch((error) => {
+                console.error("Error adding category:", error);
+                alert("Failed to add category.");
             });
     };
 
@@ -307,8 +340,8 @@ const InventoryManagement = () => {
                                 variant="outlined"
                                 type="text"
                                 placeholder="Enter Category name"
-                                value={itemName}
-                                onChange={(e) => setitemName(e.target.value)}
+                                value={categoryName}
+                                onChange={(e) => setCategoryName(e.target.value)}
                                 required
                             />
                         </div>
@@ -493,7 +526,7 @@ const InventoryManagement = () => {
 
 
                         <Button
-                            onClick={handleAddCategory}
+                            onClick={handleAddItem}
                             variant='contained'
                             className='col-span-2 py-2.5 mt-2'
                             size='medium'
