@@ -56,6 +56,7 @@ const InventoryManagement = () => {
     const [itemApperance, setitemApperance] = useState("");
     const [slabThickness, setslabThickness] = useState("");
     const [slabSize, setslabSize] = useState("");
+    const [itemQty, setitemQty] = useState("");
     const [comnApplication, setcomnApplication] = useState("");
 
     // Generate Category ID
@@ -68,7 +69,7 @@ const InventoryManagement = () => {
 
 
     const handleAddCategory = () => {
-        if (!itemName || !selectedImage || !itemColor || !itemOrigin || !itemApperance || !slabThickness || !slabSize || !comnApplication) {
+        if (!itemName || !selectedImage || !itemColor || !itemOrigin || !itemApperance || !slabThickness || !slabSize || !comnApplication || !itemQty) {
             alert("Please provide a proper item details.");
             return;
         }
@@ -85,6 +86,7 @@ const InventoryManagement = () => {
             itemApperance: itemApperance,
             slabThickness: slabThickness,
             slabSize: slabSize,
+            itemQty: itemQty,
             comnApplication: comnApplication,
             image: selectedImage,
             created_time: timeStamp
@@ -102,6 +104,7 @@ const InventoryManagement = () => {
                 setitemApperance("");
                 setslabThickness("");
                 setslabSize("");
+                setitemQty("");
                 setcomnApplication("");
                 setSelectedImage(null);
             })
@@ -112,7 +115,7 @@ const InventoryManagement = () => {
     };
 
     const [availableRoles, setAvailableRoles] = useState([]);
-    const [role, setRole] = useState("");
+    // const [role, setRole] = useState("");
 
     useEffect(() => {
         const categoriesRef = ref(database, 'categories/');
@@ -434,30 +437,6 @@ const InventoryManagement = () => {
                         </div>
 
                         <div className='flex flex-col'>
-                            <label className="h6">Slab thickness</label>
-                            <TextField id="outlined-basic"
-                                variant="outlined"
-                                type="text"
-                                placeholder="Enter Slab thickness"
-                                value={slabThickness}
-                                onChange={(e) => setslabThickness(e.target.value)}
-                                required
-                            />
-                        </div>
-
-                        <div className='flex flex-col'>
-                            <label className="h6">Slab Size</label>
-                            <TextField id="outlined-basic"
-                                variant="outlined"
-                                type="text"
-                                placeholder="Enter Slab size"
-                                value={slabSize}
-                                onChange={(e) => setslabSize(e.target.value)}
-                                required
-                            />
-                        </div>
-
-                        <div className='flex flex-col'>
                             <label className="h6">Common Applications</label>
                             <TextField id="outlined-basic"
                                 variant="outlined"
@@ -469,6 +448,49 @@ const InventoryManagement = () => {
                             />
 
                         </div>
+
+                        <div className='grid grid-flow-col grid-cols-3 col-span-2 gap-x-5'>
+
+                            <div className='flex flex-col'>
+                                <label className="h6">Slab thickness</label>
+                                <TextField id="outlined-basic"
+                                    variant="outlined"
+                                    type="text"
+                                    placeholder="Enter Slab thickness"
+                                    value={slabThickness}
+                                    onChange={(e) => setslabThickness(e.target.value)}
+                                    required
+                                />
+                            </div>
+
+                            <div className='flex flex-col'>
+                                <label className="h6">Slab Size</label>
+                                <TextField id="outlined-basic"
+                                    variant="outlined"
+                                    type="text"
+                                    placeholder="Enter Slab size"
+                                    value={slabSize}
+                                    onChange={(e) => setslabSize(e.target.value)}
+                                    required
+                                />
+                            </div>
+
+                            <div className='flex flex-col'>
+                                <label className="h6">Item Quantity</label>
+                                <TextField id="outlined-basic"
+                                    variant="outlined"
+                                    type="text"
+                                    placeholder="Enter Item Quantity"
+                                    value={itemQty}
+                                    onChange={(e) => setitemQty(e.target.value)}
+                                    required
+                                />
+                            </div>
+
+                        </div>
+
+
+
 
                         <Button
                             onClick={handleAddCategory}
