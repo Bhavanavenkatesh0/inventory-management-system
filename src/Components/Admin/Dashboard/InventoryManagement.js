@@ -11,6 +11,7 @@ import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { onValue, ref, set } from 'firebase/database';
 import { database } from '../../../firebase';
+import { collection, addDoc } from 'firebase/firestore';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -169,6 +170,39 @@ const InventoryManagement = () => {
     }, []);
 
 
+
+
+    // ADD Category MODAL
+    const [openAddSupplierModal, setOpenAddSupplierModal] = useState(false);
+    const addSupplierModalOpen = () => setOpenAddSupplierModal(true);
+    const addSupplierModalClose = () => setOpenAddSupplierModal(false);
+
+    const [supplier, setSupplier] = useState({
+        businessName: "",
+        ownerName: "",
+        address: "",
+        phoneNumber: "",
+        dealsIn: [],
+        gstin: "",
+        previousTransactions: "",
+        lastSuppliedItem: ""
+    });
+
+    const handleAddSupplier = async () => {
+        try {
+            await set(ref(database, `suppliers/${supplier.businessName}`), supplier);
+            setOpenAddSupplierModal(false);
+            alert("Supplier added successfully.");
+            setSupplier({ /* reset form */ });
+        } catch (error) {
+            alert.error("Error adding supplier");
+        }
+    };
+
+
+
+
+
     return (
         <div style={{ fontFamily: "Roboto" }} className='grid gap-y-4'>
 
@@ -176,6 +210,21 @@ const InventoryManagement = () => {
 
             <div className='grid grid-flow-col justify-between items-center'>
                 <Stack direction="row" spacing={1.5} >
+                    <Chip variant='outlined'
+                        label='Categories'
+                        sx={{
+                            background: selectedInventoryScreen === "Categories" ? "#004385" : "transparent",
+                            color: selectedInventoryScreen === "Categories" ? "white" : "#004385",
+                            border: selectedInventoryScreen === "Categories" ? "2.5px inset #004385" : "2.5px outset #004385",
+                            fontWeight: "500", letterSpacing: "0.5px",
+                            cursor: "pointer", transition: "0.3s ease-in-out",
+                            "&:hover": {
+                                background: "#004385 !important",
+                                color: "white",
+                            },
+                        }}
+                        onClick={() => setselectedInventoryScreen("Categories")}
+                    />
                     <Chip variant='outlined'
                         label='Inventory'
                         sx={{
@@ -221,7 +270,7 @@ const InventoryManagement = () => {
                         }}
                         onClick={() => setselectedInventoryScreen("Purchase Orders")}
                     />
-                    <Chip variant='outlined'
+                    {/* <Chip variant='outlined'
                         label='Stock Alerts'
                         sx={{
                             background: selectedInventoryScreen === "Stock Alerts" ? "#004385" : "transparent",
@@ -235,22 +284,8 @@ const InventoryManagement = () => {
                             },
                         }}
                         onClick={() => setselectedInventoryScreen("Stock Alerts")}
-                    />
-                    <Chip variant='outlined'
-                        label='Categories'
-                        sx={{
-                            background: selectedInventoryScreen === "Categories" ? "#004385" : "transparent",
-                            color: selectedInventoryScreen === "Categories" ? "white" : "#004385",
-                            border: selectedInventoryScreen === "Categories" ? "2.5px inset #004385" : "2.5px outset #004385",
-                            fontWeight: "500", letterSpacing: "0.5px",
-                            cursor: "pointer", transition: "0.3s ease-in-out",
-                            "&:hover": {
-                                background: "#004385 !important",
-                                color: "white",
-                            },
-                        }}
-                        onClick={() => setselectedInventoryScreen("Categories")}
-                    />
+                    /> */}
+
                 </Stack>
                 {selectedInventoryScreen === "Categories" &&
                     <div className='gap-x-5 grid grid-flow-col'>
@@ -272,6 +307,16 @@ const InventoryManagement = () => {
                             onClick={addItemModalOpen}>Add Item</Button>
                     </div>
                 }
+                {selectedInventoryScreen === "Suppliers" &&
+                    <div className='gap-x-5 grid grid-flow-col'>
+
+                        <Button variant='contained' size='medium' className='!py-2'
+                            style={{
+                                background: "#004385", borderRadius: "5px", padding: "0 2rem"
+                            }}
+                            onClick={addSupplierModalOpen}>Add Suppliers</Button>
+                    </div>
+                }
             </div>
 
             <div className="inventory">
@@ -287,10 +332,10 @@ const InventoryManagement = () => {
                 {selectedInventoryScreen === "Purchase Orders" &&
                     <PurchaseOrdersTab />
                 }
-
+                {/* 
                 {selectedInventoryScreen === "Stock Alerts" &&
                     <StockAlertsTab />
-                }
+                } */}
 
                 {selectedInventoryScreen === "Categories" &&
                     <CategoriesTab />
@@ -536,6 +581,93 @@ const InventoryManagement = () => {
                             Add Item
                         </Button>
 
+                    </form>
+                </Card>
+            </Modal>
+
+
+
+            {/* ADD SUPPLIER */}
+
+            <Modal open={openAddSupplierModal} onClose={addSupplierModalClose}>
+                <Card
+                    className='w-2/5'
+                    sx={{
+                        position: 'absolute', top: '50%', left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        bgcolor: 'background.paper', boxShadow: 24, p: 4,
+                    }}>
+                    <header className='grid grid-flow-col justify-between items-center mb-4'>
+                        <span></span>
+                        <span className='font-bold text-3xl text-gray-900'>Add Supplier</span>
+                        <CloseIcon sx={{ color: "red", fontSize: "28px", cursor: "pointer" }} onClick={addSupplierModalClose} />
+                    </header>
+                    <form onSubmit={(e) => e.preventDefault()} className='grid gap-4 grid-cols-2'>
+                        <TextField
+                            label="Business Name"
+                            variant="outlined"
+                            fullWidth
+                            value={supplier.businessName}
+                            onChange={(e) => setSupplier({ ...supplier, businessName: e.target.value })}
+                            required
+                        />
+                        <TextField
+                            label="Owner Name"
+                            type="email"
+                            variant="outlined"
+                            fullWidth
+                            value={supplier.ownerName}
+                            onChange={(e) => setSupplier({ ...supplier, ownerName: e.target.value })}
+                        />
+                        <TextField
+                            label="Address"
+                            variant="outlined"
+                            fullWidth
+                            value={supplier.address} onChange={(e) => setSupplier({ ...supplier, address: e.target.value })}
+                        />
+                        <TextField
+                            label="Phone Number"
+                            variant="outlined"
+                            fullWidth
+                            value={supplier.phoneNumber} onChange={(e) => setSupplier({ ...supplier, phoneNumber: e.target.value })}
+                        />
+
+                        <TextField
+                            label="Deals In (comma separated)"
+                            variant="outlined"
+                            fullWidth
+                            value={supplier.dealsIn.join(", ")} onChange={(e) => setSupplier({ ...supplier, dealsIn: e.target.value.split(",").map(i => i.trim()) })}
+                        />
+
+                        <TextField
+                            label="GSTIN"
+                            variant="outlined"
+                            fullWidth
+                            value={supplier.gstin} onChange={(e) => setSupplier({ ...supplier, gstin: e.target.value })}
+                        />
+
+                        <TextField
+                            label="Previous Transactions"
+                            variant="outlined"
+                            fullWidth
+                            value={supplier.previousTransactions} onChange={(e) => setSupplier({ ...supplier, previousTransactions: e.target.value })}
+                        />
+
+                        <TextField
+                            label="Last Supplied Item"
+                            variant="outlined"
+                            fullWidth
+                            value={supplier.lastSuppliedItem} onChange={(e) => setSupplier({ ...supplier, lastSuppliedItem: e.target.value })}
+                        />
+
+                        <Button
+                            onClick={handleAddSupplier}
+                            variant="contained"
+                            className='col-span-2 py-2'
+                            style={{ backgroundColor: "#004385", color: "#fff", fontWeight: 600 }}
+                        >
+                            Add Supplier
+                        </Button>
                     </form>
                 </Card>
             </Modal>
