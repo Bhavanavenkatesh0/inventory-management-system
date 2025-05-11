@@ -16,17 +16,19 @@ const InventoryTab = () => {
         onValue(itemsRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                const categoryArray = Object.values(data);
-                setItems(categoryArray);
+                const itemArray = Object.values(data);
+
+                // Sort by itemCategory in ascending order
+                itemArray.sort((a, b) => {
+                    const catA = a.itemCategory?.toLowerCase() || '';
+                    const catB = b.itemCategory?.toLowerCase() || '';
+                    return catA.localeCompare(catB);
+                });
+
+                setItems(itemArray);
             }
         });
     }, []);
-
-
-
-
-
-
 
 
     const [itemName, setitemName] = useState("");
@@ -193,18 +195,6 @@ const InventoryTab = () => {
                                         <DeleteForeverIcon />
                                         &nbsp;&nbsp;Delete
                                     </Button>
-
-                                    {/* <IconButton className='!h-9 rounded-md'
-                                        sx={{ color: '#fff', backgroundColor: '#004385', '&:hover': { backgroundColor: '#003366' } }}
-                                        onClick={() => editItemModalOpen(item)}>
-                                        <EditSquareIcon />
-                                    </IconButton>
-
-                                    <IconButton className='!h-9 rounded-md'
-                                        sx={{ color: '#fff', backgroundColor: '#262524', '&:hover': { backgroundColor: '#353637' } }}
-                                        onClick={() => handleDeleteItem(item.id)}>
-                                        <DeleteForeverIcon />
-                                    </IconButton> */}
 
                                 </div>
                             </div>

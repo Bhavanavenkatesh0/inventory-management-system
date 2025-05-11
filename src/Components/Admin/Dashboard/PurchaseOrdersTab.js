@@ -28,6 +28,7 @@ const PurchaseOrdersTab = () => {
                     <Card key={index} className='flex gap-3 p-2.5'>
                         <div className='flex flex-col justify-between flex-grow'>
                             <span className='text-lg font-bold w-full mt-1'>{item.itemName}</span>
+                            <span className='text-base font-bold w-full text-slate-800'>Supplier : <span className='text-sm font-normal'> {item.supplierName}</span> </span>
                             <span className='text-base font-bold w-full text-slate-800'>Product Ordered : <span className='text-sm font-normal'> {item.productOrdered}</span> </span>
                             <span className='text-base font-bold w-full text-slate-800'>Quantity : <span className='text-sm font-normal'> {item.quantity}</span> </span>
                             <span className='text-base font-bold w-full text-slate-800'>Unit Price : <span className='text-sm font-normal'>₹ {item.unitPrice}</span> </span>
@@ -47,9 +48,21 @@ const PurchaseOrdersTab = () => {
                                 })}
                             </span> </span>
                             <span className='text-base font-bold w-full text-slate-800'>Delivery Date : <span className='text-sm font-normal'> {item.deliveryDate ? item.deliveryDate : "Not Delivered"}</span> </span>
-                            <span className='text-base font-bold w-full text-slate-800 mt-1.5'>Status : <span className='text-sm font-normal'> {item.status}</span> </span>
-                            <span className='text-base font-bold w-full text-slate-800'>Payment Status : <span className='text-sm font-normal'> {item.paymentStatus}</span> </span>
-                            <span className='text-base font-bold w-full text-slate-800 mt-1.5'>Notes : <span className='text-sm font-normal'> {item.notes ? item.notes : "---NIL---"}</span> </span>
+                            <span className='text-base font-bold w-full text-slate-800 mt-1.5'>
+                                Status :
+                                <span style={{ color: item.status === 'Ordered' ? '#2196F3' : '#4CAF50' }}
+                                    className='text-sm font-semibold'> {item.status}
+                                </span> </span>
+                            <span className='text-base font-bold w-full text-slate-800'>
+                                Payment Status :
+                                <span style={{ color: item.paymentStatus === 'Pending' ? '#FFC107' : item.paymentStatus === 'Partial' ? '#FF9800' : '#4CAF50' }}
+                                    className={`text-sm font-semibold`}> {item.paymentStatus}
+                                </span> </span>
+                            <span className='text-base font-bold w-full text-slate-800 mt-1.5'>
+                                Notes :
+                                <span className={` ${item.notes ? "font-semibold #252525" : "font-normal text-slate-800"} text-sm`}>
+                                    {item.notes ? item.notes : "---NIL---"}
+                                </span> </span>
                         </div>
                     </Card>
                 ))}

@@ -4,14 +4,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import InventoryTab from './InventoryTab';
 import SuppliersTab from './SuppliersTab';
 import PurchaseOrdersTab from './PurchaseOrdersTab';
-import StockAlertsTab from './StockAlertsTab';
 import CategoriesTab from './CategoriesTab';
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { onValue, ref, set } from 'firebase/database';
 import { database } from '../../../firebase';
-import { collection, addDoc } from 'firebase/firestore';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 

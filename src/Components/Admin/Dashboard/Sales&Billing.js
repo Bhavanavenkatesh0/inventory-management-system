@@ -1,5 +1,9 @@
 import { Chip, Stack } from '@mui/material';
 import React, { useState } from 'react';
+import SalesTab from './SalesTab';
+import CustomersTab from './CustomersTab';
+import BillingsTab from './BillingsTab';
+import PaymentsTab from './PaymentsTab';
 
 const SalesBilling = () => {
 
@@ -79,27 +83,19 @@ const SalesBilling = () => {
             <div className="Sales">
 
                 {selectedSalesNBillingScreen === "Sales" &&
-                    <div className=''>
-                        <h1>Sales</h1>
-                    </div>
+                    <SalesTab />
                 }
 
                 {selectedSalesNBillingScreen === "Customers" &&
-                    <div className=''>
-                        <h1>Customers</h1>
-                    </div>
+                    <CustomersTab />
                 }
 
                 {selectedSalesNBillingScreen === "Billing" &&
-                    <div className=''>
-                        <h1>Billing</h1>
-                    </div>
+                    <BillingsTab />
                 }
 
                 {selectedSalesNBillingScreen === "Payments" &&
-                    <div className=''>
-                        <h1>Payments</h1>
-                    </div>
+                    <PaymentsTab />
                 }
 
             </div>

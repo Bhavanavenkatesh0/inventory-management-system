@@ -97,6 +97,46 @@ const CategoriesTab = () => {
     };
 
 
+    // SUM OF ITEMS IN EACH CATEGORY
+
+    const [categoryStock, setCategoryStock] = useState();
+
+    useEffect(() => {
+        const categoriesRef = ref(database, 'categories');
+        const itemsRef = ref(database, 'items');
+
+        // Fetch categories
+        onValue(categoriesRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                const categoryArray = Object.values(data);
+                setCategories(categoryArray);
+            }
+        });
+
+        // Fetch items and calculate total stock for each category
+        onValue(itemsRef, (snapshot) => {
+            const data = snapshot.val();
+            const stockMap = {};
+
+            if (data) {
+                Object.values(data).forEach(item => {
+                    const category = item.itemCategory;
+                    const qty = parseInt(item.itemQty) || 0;
+
+                    if (!stockMap[category]) {
+                        stockMap[category] = 0;
+                    }
+                    stockMap[category] += qty;
+                });
+            }
+
+            setCategoryStock(stockMap);
+        });
+    }, []);
+
+
+
     return (
         <div className='w-full max-w-full custom-scroll max-h-[585px] overflow-y-auto'>
             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 p-0 overflow-y-auto custom-scroll max-h-[580px] pb-1'>
@@ -110,13 +150,12 @@ const CategoriesTab = () => {
                             />
                         </div>
                         <div className='flex flex-col gap-y-'>
-                            {/* <div className='flex flex-row align-middle justify-between'> */}
                             <span className='text-sm font-normal text-gray-600'>{category.id}</span>
-                            {/* <span className='text-sm text-gray-600'>Items in Stock : 2000</span> */}
-                            {/* </div> */}
                             <span className='text-lg font-bold w-full'>{category.categoryName}</span>
                             <div className='flex justify-between items-center'>
-                                <span className='text-sm text-gray-600'>Items in Stock : 2000</span>
+                                <span className='text-sm text-gray-600'>
+                                    Items in Stock : {categoryStock[category.categoryName] || 0}
+                                </span>
                                 <div className='flex justify-end gap-3 w-fit'>
 
                                     <IconButton className='!h-9 rounded-md'
