@@ -326,7 +326,7 @@ const BillingsTab = () => {
                                     <span className='text-sm font-bold w-full m-0 p-0 text-slate-800'>Slab Size : <span className='text-sm font-normal'> {item.slabSize}</span> </span>
                                     <span className='text-sm font-bold w-full m-0 p-0 text-slate-800'>Applications : <span className='text-sm font-normal'> {item.comnApplication}</span> </span>
                                     <div className='mt-1 grid grid-flow-col items-center justify-between'>
-                                        <span className='text-lg font-bold w-full m-0 p-0 text-blue-900'> Rs. 2000/-</span>
+                                        <span className='text-lg font-bold w-full m-0 p-0 text-blue-900'>₹ {Number(item.itemPrice).toFixed(2)}</span>
                                         <Button variant='contained' className='bg-[#004385] shadow-none' size='small'>
                                             Add product
                                         </Button>
