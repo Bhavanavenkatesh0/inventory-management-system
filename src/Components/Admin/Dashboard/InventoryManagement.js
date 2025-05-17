@@ -1,5 +1,6 @@
-import { Button, Chip, Stack, TextField, Modal, Card, Avatar, Select, MenuItem } from '@mui/material';
+import { Button, Chip, Stack, TextField, Modal, Card, Avatar, InputAdornment, Select, MenuItem } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import SearchIcon from '@mui/icons-material/Search';
 import React, { useEffect, useRef, useState } from 'react';
 import InventoryTab from './InventoryTab';
 import SuppliersTab from './SuppliersTab';
@@ -10,6 +11,8 @@ import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { onValue, ref, set } from 'firebase/database';
 import { database } from '../../../firebase';
+import defaultItemImage from '../../../assets/images/addItemPlaceholder.png';
+import defaultCategoryImage from '../../../assets/images/addCategoryPlaceholder.png';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -199,6 +202,9 @@ const InventoryManagement = () => {
 
 
 
+    // SEARCH QUERY STATE
+    const [searchQuery, setSearchQuery] = useState('');
+
 
 
     return (
@@ -268,21 +274,6 @@ const InventoryManagement = () => {
                         }}
                         onClick={() => setselectedInventoryScreen("Purchase Orders")}
                     />
-                    {/* <Chip variant='outlined'
-                        label='Stock Alerts'
-                        sx={{
-                            background: selectedInventoryScreen === "Stock Alerts" ? "#004385" : "transparent",
-                            color: selectedInventoryScreen === "Stock Alerts" ? "white" : "#004385",
-                            border: selectedInventoryScreen === "Stock Alerts" ? "2.5px inset #004385" : "2.5px outset #004385",
-                            fontWeight: "500", letterSpacing: "0.5px",
-                            cursor: "pointer", transition: "0.3s ease-in-out",
-                            "&:hover": {
-                                background: "#004385 !important",
-                                color: "white",
-                            },
-                        }}
-                        onClick={() => setselectedInventoryScreen("Stock Alerts")}
-                    /> */}
 
                 </Stack>
                 {selectedInventoryScreen === "Categories" &&
@@ -297,6 +288,22 @@ const InventoryManagement = () => {
                 }
                 {selectedInventoryScreen === "Inventory" &&
                     <div className='gap-x-5 grid grid-flow-col'>
+
+                        <TextField
+                            variant="outlined"
+                            type="text"
+                            placeholder="Search here..."
+                            size='small'
+                            className='w-72'
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position='start'>
+                                        <SearchIcon />
+                                    </InputAdornment>
+                                )
+                            }} />
 
                         <Button variant='contained' size='medium' className='!py-2'
                             style={{
@@ -320,7 +327,7 @@ const InventoryManagement = () => {
             <div className="inventory">
 
                 {selectedInventoryScreen === "Inventory" &&
-                    <InventoryTab />
+                    <InventoryTab searchQuery={searchQuery} />
                 }
 
                 {selectedInventoryScreen === "Suppliers" &&
@@ -369,8 +376,8 @@ const InventoryManagement = () => {
                         <div className='col-span-2 flex items-center justify-center'>
                             <Avatar
                                 onClick={handleAvatarClick}
-                                src={selectedImage}
-                                className=''
+                                src={selectedImage || defaultCategoryImage}
+                                className='rounded-md'
                                 sx={{ width: 100, height: 100 }} />
                             <input type='file' accept='image/*'
                                 ref={fileInputRef} onChange={handleImageChange}
@@ -433,7 +440,7 @@ const InventoryManagement = () => {
                         <div className='col-span-2 flex items-center justify-center'>
                             <Avatar
                                 onClick={handleAvatarClick}
-                                src={selectedImage}
+                                src={selectedImage || defaultItemImage}
                                 className='!rounded-md'
                                 sx={{ width: 100, height: 100 }} />
                             <input type='file' accept='image/*'

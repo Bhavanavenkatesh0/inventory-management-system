@@ -7,7 +7,7 @@ import EditSquareIcon from '@mui/icons-material/EditSquare';
 import CloseIcon from '@mui/icons-material/Close';
 
 
-const InventoryTab = () => {
+const InventoryTab = ({ searchQuery }) => {
 
     const [items, setItems] = useState([]);
 
@@ -39,6 +39,7 @@ const InventoryTab = () => {
     const [slabThickness, setslabThickness] = useState("");
     const [slabSize, setslabSize] = useState("");
     const [itemQty, setitemQty] = useState("");
+    const [itemPrice, setitemPrice] = useState("");
     const [comnApplication, setcomnApplication] = useState("");
 
     // EDIT CATEGORY MODAL
@@ -58,7 +59,8 @@ const InventoryTab = () => {
         setitemApperance(item.itemApperance);
         setslabThickness(item.slabThickness);
         setslabSize(item.slabSize);
-        setitemQty(item.itemQty)
+        setitemQty(item.itemQty);
+        setitemPrice(item.itemPrice);
         setcomnApplication(item.comnApplication);
         setopeneditItemModal(true);
     };
@@ -81,6 +83,7 @@ const InventoryTab = () => {
             slabThickness: slabThickness,
             slabSize: slabSize,
             itemQty: itemQty,
+            itemPrice: itemPrice,
             comnApplication: comnApplication,
             image: selectedImage || "", // keep empty if not updated
         };
@@ -157,50 +160,58 @@ const InventoryTab = () => {
     return (
         <div className='w-full max-w-full custom-scroll max-h-[585px] overflow-y-auto'>
             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 gap-3 p-0 overflow-y-auto custom-scroll max-h-[580px] pb-1'>
-                {items.map((item, index) => (
-                    <Card key={index} className='flex gap-3 p-2.5'>
-                        <div className="w-50 h-100 flex-shrink-0 overflow-hidden rounded border">
-                            <img
-                                src={item.image}
-                                alt={item.categoryName}
-                                className="w-full h-full object-cover"
-                            />
-                        </div>
-                        <div className='flex flex-col justify-between flex-grow'>
-                            <div className='flex m-0 p-0 justify-between'>
-                                <span className='text-sm font-normal text-gray-600'>{item.id} &nbsp;</span>
-                                <span className='text-sm text-gray-600'>Items in Stock : {item.itemQty}</span>
+                {items
+                    .filter(item =>
+                        item.itemName?.toLowerCase().includes(searchQuery) ||
+                        item.itemCategory?.toLowerCase().includes(searchQuery) ||
+                        item.itemColor?.toLowerCase().includes(searchQuery) ||
+                        item.itemOrigin?.toLowerCase().includes(searchQuery)
+                    )
+                    .map((item, index) => (
+                        <Card key={index} className='flex gap-3 p-2.5'>
+                            <div className="w-50 h-100 flex-shrink-0 overflow-hidden rounded border">
+                                <img
+                                    src={item.image}
+                                    alt={item.categoryName}
+                                    className="w-full h-full object-cover"
+                                />
                             </div>
-                            <span className='text-lg font-bold w-full mt-1'>{item.itemName}</span>
-                            <span className='text-base font-bold w-full text-slate-800'>Category : <span className='text-sm font-normal'> {item.itemCategory}</span> </span>
-                            <span className='text-base font-bold w-full text-slate-800'>Color : <span className='text-sm font-normal'> {item.itemColor}</span> </span>
-                            <span className='text-base font-bold w-full text-slate-800'>Origin : <span className='text-sm font-normal'> {item.itemOrigin}</span> </span>
-                            <span className='text-base font-bold w-full text-slate-800'>Appearance : <span className='text-sm font-normal'> {item.itemApperance}</span> </span>
-                            <span className='text-base font-bold w-full text-slate-800'>Slab Thickness : <span className='text-sm font-normal'> {item.slabThickness}</span> </span>
-                            <span className='text-base font-bold w-full text-slate-800'>Slab Size : <span className='text-sm font-normal'> {item.slabSize}</span> </span>
-                            <span className='text-base font-bold w-full text-slate-800'>Applications : <span className='text-sm font-normal'> {item.comnApplication}</span> </span>
-                            <div className='flex justify-between items-center mt-0'>
-                                <div className='grid grid-flow-col grid-cols-2 w-full gap-x-3 mt-1'>
+                            <div className='flex flex-col justify-between flex-grow'>
+                                <div className='flex m-0 p-0 justify-between'>
+                                    <span className='text-sm font-normal text-gray-600'>{item.id} &nbsp;</span>
+                                    <span className='text-sm text-gray-600'>Items in Stock : {item.itemQty}</span>
+                                </div>
+                                <span className='text-lg font-bold w-full mt-1'>{item.itemName}</span>
+                                <span className='text-base font-bold w-full text-slate-800'>Category : <span className='text-sm font-normal'> {item.itemCategory}</span> </span>
+                                <span className='text-base font-bold w-full text-slate-800'>Color : <span className='text-sm font-normal'> {item.itemColor}</span> </span>
+                                <span className='text-base font-bold w-full text-slate-800'>Origin : <span className='text-sm font-normal'> {item.itemOrigin}</span> </span>
+                                <span className='text-base font-bold w-full text-slate-800'>Appearance : <span className='text-sm font-normal'> {item.itemApperance}</span> </span>
+                                <span className='text-base font-bold w-full text-slate-800'>Slab Thickness : <span className='text-sm font-normal'> {item.slabThickness}</span> </span>
+                                <span className='text-base font-bold w-full text-slate-800'>Slab Size : <span className='text-sm font-normal'> {item.slabSize}</span> </span>
+                                <span className='text-base font-bold w-full text-slate-800'>Applications : <span className='text-sm font-normal'> {item.comnApplication}</span> </span>
+                                <span className='text-lg font-bold w-full text-red-600'> {item.itemPrice ? "₹ " + Number(item.itemPrice).toFixed(2) : "₹ 0.00"} </span>
+                                <div className='flex justify-between items-center mt-0'>
+                                    <div className='grid grid-flow-col grid-cols-2 w-full gap-x-3 mt-1'>
 
-                                    <Button className='!h-9 rounded-md'
-                                        sx={{ color: '#fff', backgroundColor: '#004385', '&:hover': { backgroundColor: '#003366' } }}
-                                        onClick={() => editItemModalOpen(item)}>
-                                        <EditSquareIcon />
-                                        &nbsp;&nbsp;Edit
-                                    </Button>
+                                        <Button className='!h-9 rounded-md'
+                                            sx={{ color: '#fff', backgroundColor: '#004385', '&:hover': { backgroundColor: '#003366' } }}
+                                            onClick={() => editItemModalOpen(item)}>
+                                            <EditSquareIcon />
+                                            &nbsp;&nbsp;Edit
+                                        </Button>
 
-                                    <Button className='!h-9 rounded-md'
-                                        sx={{ color: '#fff', backgroundColor: '#262524', '&:hover': { backgroundColor: '#353637' } }}
-                                        onClick={() => handleDeleteItem(item.id)}>
-                                        <DeleteForeverIcon />
-                                        &nbsp;&nbsp;Delete
-                                    </Button>
+                                        <Button className='!h-9 rounded-md'
+                                            sx={{ color: '#fff', backgroundColor: '#262524', '&:hover': { backgroundColor: '#353637' } }}
+                                            onClick={() => handleDeleteItem(item.id)}>
+                                            <DeleteForeverIcon />
+                                            &nbsp;&nbsp;Delete
+                                        </Button>
 
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </Card>
-                ))}
+                        </Card>
+                    ))}
             </div>
 
             {/* Edit Item MODAL */}
@@ -274,28 +285,80 @@ const InventoryTab = () => {
                             </Select>
                         </div>
 
-                        <div className='flex flex-col'>
-                            <label className="h6">Item Color</label>
-                            <TextField id="outlined-basic"
-                                variant="outlined"
-                                type="text"
-                                placeholder="Enter Item color"
-                                value={itemColor}
-                                onChange={(e) => setitemColor(e.target.value)}
-                                required
-                            />
+                        <div className='grid grid-flow-col grid-cols-3 col-span-2 gap-x-5'>
+                            <div className='flex flex-col'>
+                                <label className="h6">Item Color</label>
+                                <TextField id="outlined-basic"
+                                    variant="outlined"
+                                    type="text"
+                                    placeholder="Enter Item color"
+                                    value={itemColor}
+                                    onChange={(e) => setitemColor(e.target.value)}
+                                    required
+                                />
+                            </div>
+
+                            <div className='flex flex-col'>
+                                <label className="h6">Item Origin</label>
+                                <TextField id="outlined-basic"
+                                    variant="outlined"
+                                    type="text"
+                                    placeholder="Enter Item origin"
+                                    value={itemOrigin}
+                                    onChange={(e) => setitemOrigin(e.target.value)}
+                                    required
+                                />
+                            </div>
+
+                            <div className='flex flex-col'>
+                                <label className="h6">Item Quantity</label>
+                                <TextField id="outlined-basic"
+                                    variant="outlined"
+                                    type="text"
+                                    placeholder="Enter Item Quantity"
+                                    value={itemQty}
+                                    onChange={(e) => setitemQty(e.target.value)}
+                                    required
+                                />
+                            </div>
                         </div>
 
-                        <div className='flex flex-col'>
-                            <label className="h6">Item Origin</label>
-                            <TextField id="outlined-basic"
-                                variant="outlined"
-                                type="text"
-                                placeholder="Enter Item origin"
-                                value={itemOrigin}
-                                onChange={(e) => setitemOrigin(e.target.value)}
-                                required
-                            />
+                        <div className='grid grid-flow-col grid-cols-3 col-span-2 gap-x-5'>
+                            <div className='flex flex-col'>
+                                <label className="h6">Slab thickness</label>
+                                <TextField id="outlined-basic"
+                                    variant="outlined"
+                                    type="text"
+                                    placeholder="Enter Slab thickness"
+                                    value={slabThickness}
+                                    onChange={(e) => setslabThickness(e.target.value)}
+                                    required
+                                />
+                            </div>
+
+                            <div className='flex flex-col'>
+                                <label className="h6">Slab Size</label>
+                                <TextField id="outlined-basic"
+                                    variant="outlined"
+                                    type="text"
+                                    placeholder="Enter Slab size"
+                                    value={slabSize}
+                                    onChange={(e) => setslabSize(e.target.value)}
+                                    required
+                                />
+                            </div>
+
+                            <div className='flex flex-col'>
+                                <label className="h6">Item Price</label>
+                                <TextField id="outlined-basic"
+                                    variant="outlined"
+                                    type="text"
+                                    placeholder="Enter Item Price"
+                                    value={itemPrice}
+                                    onChange={(e) => setitemPrice(e.target.value)}
+                                    required
+                                />
+                            </div>
                         </div>
 
                         <div className='flex flex-col'>
@@ -322,48 +385,6 @@ const InventoryTab = () => {
                             />
 
                         </div>
-
-                        <div className='grid grid-flow-col grid-cols-3 col-span-2 gap-x-5'>
-
-                            <div className='flex flex-col'>
-                                <label className="h6">Slab thickness</label>
-                                <TextField id="outlined-basic"
-                                    variant="outlined"
-                                    type="text"
-                                    placeholder="Enter Slab thickness"
-                                    value={slabThickness}
-                                    onChange={(e) => setslabThickness(e.target.value)}
-                                    required
-                                />
-                            </div>
-
-                            <div className='flex flex-col'>
-                                <label className="h6">Slab Size</label>
-                                <TextField id="outlined-basic"
-                                    variant="outlined"
-                                    type="text"
-                                    placeholder="Enter Slab size"
-                                    value={slabSize}
-                                    onChange={(e) => setslabSize(e.target.value)}
-                                    required
-                                />
-                            </div>
-
-                            <div className='flex flex-col'>
-                                <label className="h6">Item Quantity</label>
-                                <TextField id="outlined-basic"
-                                    variant="outlined"
-                                    type="text"
-                                    placeholder="Enter Item Quantity"
-                                    value={itemQty}
-                                    onChange={(e) => setitemQty(e.target.value)}
-                                    required
-                                />
-                            </div>
-
-                        </div>
-
-
 
                         <Button
                             onClick={handleEditItem}
