@@ -19,7 +19,7 @@ dayjs.extend(timezone);
 const InventoryManagement = () => {
 
     // Select inventory Tab
-    const [selectedInventoryScreen, setselectedInventoryScreen] = useState("Inventory");
+    const [selectedInventoryScreen, setselectedInventoryScreen] = useState("Categories");
 
     // ADD Category MODAL
     const [openAddCatModal, setOpenAddCatModal] = useState(false);
