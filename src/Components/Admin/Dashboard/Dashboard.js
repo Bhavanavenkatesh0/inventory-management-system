@@ -91,7 +91,7 @@ const Dashboard = () => {
         { title: "Inventory Management", Icon: WarehouseIcon },
         { title: "Sales & Billing", Icon: RequestQuoteIcon },
         { title: "Reporting & Analytics", Icon: InsightsIcon },
-        { title: "Settings", Icon: SettingsIcon }
+        // { title: "Settings", Icon: SettingsIcon }
     ];
 
     const renderContent = () => {
@@ -101,7 +101,7 @@ const Dashboard = () => {
             case "Inventory Management": return <InventoryManagement />;
             case "Sales & Billing": return <SalesBilling />;
             case "Reporting & Analytics": return <ReportingAnalytics />;
-            case "Settings": return <Settings />;
+            // case "Settings": return <Settings />;
             default: return <h1>Welcome!</h1>;
         }
     };

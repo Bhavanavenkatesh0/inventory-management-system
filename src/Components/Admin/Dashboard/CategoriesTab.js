@@ -99,7 +99,7 @@ const CategoriesTab = () => {
 
     // SUM OF ITEMS IN EACH CATEGORY
 
-    const [categoryStock, setCategoryStock] = useState();
+    const [categoryStock, setCategoryStock] = useState({});
 
     useEffect(() => {
         const categoriesRef = ref(database, 'categories');

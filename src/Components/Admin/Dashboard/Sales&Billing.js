@@ -33,7 +33,7 @@ const SalesBilling = () => {
                         }}
                         onClick={() => setselectedSalesNBillingScreen("Sales")}
                     />
-                    <Chip variant='outlined'
+                    {/* <Chip variant='outlined'
                         label='Customers'
                         sx={{
                             background: selectedSalesNBillingScreen === "Customers" ? "#004385" : "transparent",
@@ -47,7 +47,7 @@ const SalesBilling = () => {
                             },
                         }}
                         onClick={() => setselectedSalesNBillingScreen("Customers")}
-                    />
+                    /> */}
                     <Chip variant='outlined'
                         label='Billing'
                         sx={{
@@ -63,7 +63,7 @@ const SalesBilling = () => {
                         }}
                         onClick={() => setselectedSalesNBillingScreen("Billing")}
                     />
-                    <Chip variant='outlined'
+                    {/* <Chip variant='outlined'
                         label='Payments'
                         sx={{
                             background: selectedSalesNBillingScreen === "Payments" ? "#004385" : "transparent",
@@ -77,7 +77,7 @@ const SalesBilling = () => {
                             },
                         }}
                         onClick={() => setselectedSalesNBillingScreen("Payments")}
-                    />
+                    /> */}
                 </Stack>
                 {selectedSalesNBillingScreen === "Sales" &&
                     <div className='gap-x-5 grid grid-flow-col'>

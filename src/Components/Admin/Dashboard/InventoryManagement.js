@@ -194,7 +194,16 @@ const InventoryManagement = () => {
             await set(ref(database, `suppliers/${supplier.businessName}`), supplier);
             setOpenAddSupplierModal(false);
             alert("Supplier added successfully.");
-            setSupplier({ /* reset form */ });
+            setSupplier({
+                businessName: "",
+                ownerName: "",
+                address: "",
+                phoneNumber: "",
+                dealsIn: [],
+                gstin: "",
+                previousTransactions: "",
+                lastSuppliedItem: ""
+            });
         } catch (error) {
             alert.error("Error adding supplier");
         }
