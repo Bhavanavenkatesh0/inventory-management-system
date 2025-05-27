@@ -1,5 +1,7 @@
 import { Chip, Stack } from '@mui/material';
 import React, { useState } from 'react';
+import SalesReport from './SalesReport';
+import InventoryStats from './InventoryStats';
 
 const ReportingAnalytics = () => {
 
@@ -49,15 +51,11 @@ const ReportingAnalytics = () => {
             <div className="Sales Report">
 
                 {selectedReportingNAnalyticsTab === "Sales Report" &&
-                    <div className=''>
-                        <h1>Sales Report</h1>
-                    </div>
+                    <SalesReport />
                 }
 
                 {selectedReportingNAnalyticsTab === "Inventory Stats" &&
-                    <div className=''>
-                        <h1>Inventory Stats</h1>
-                    </div>
+                    <InventoryStats />
                 }
 
             </div>

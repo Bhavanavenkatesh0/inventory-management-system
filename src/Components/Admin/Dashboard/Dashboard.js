@@ -4,7 +4,7 @@ import logo from '../../../assets/images/LogoSquare.svg'
 import { ChevronLeft, LogOutIcon } from 'lucide-react';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import InsightsIcon from '@mui/icons-material/Insights';
-import SettingsIcon from '@mui/icons-material/Settings';
+// import SettingsIcon from '@mui/icons-material/Settings';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
 import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -15,7 +15,7 @@ import InventoryManagement from './InventoryManagement';
 import DashboardContent from './DashboardContent';
 import SalesBilling from './Sales&Billing';
 import ReportingAnalytics from './Reporting&Analytics';
-import Settings from './Settings';
+// import Settings from './Settings';
 import { database } from '../../../firebase';
 
 
