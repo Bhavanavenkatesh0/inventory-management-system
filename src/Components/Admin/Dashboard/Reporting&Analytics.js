@@ -11,7 +11,7 @@ const ReportingAnalytics = () => {
     return (
         <div style={{ fontFamily: "Roboto" }} className='grid gap-y-4'>
 
-            <span className='font-semibold text-2xl m-0 p-0' style={{ color: "#252627" }}>Sales & Billing</span>
+            <span className='font-semibold text-2xl m-0 p-0' style={{ color: "#252627" }}>Welcome, User</span>
 
             <div className='grid grid-flow-col justify-between items-center'>
                 <Stack direction="row" spacing={1.5} >

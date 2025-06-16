@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import logo from '../../../assets/images/LogoSquare.svg'
 import { ChevronLeft, LogOutIcon } from 'lucide-react';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
-import InsightsIcon from '@mui/icons-material/Insights';
+// import InsightsIcon from '@mui/icons-material/Insights';
 // import SettingsIcon from '@mui/icons-material/Settings';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
 import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
@@ -14,7 +14,7 @@ import { ref, onValue } from "firebase/database";
 import InventoryManagement from './InventoryManagement';
 import DashboardContent from './DashboardContent';
 import SalesBilling from './Sales&Billing';
-import ReportingAnalytics from './Reporting&Analytics';
+// import ReportingAnalytics from './Reporting&Analytics';
 // import Settings from './Settings';
 import { database } from '../../../firebase';
 
@@ -90,7 +90,7 @@ const Dashboard = () => {
         { title: "Workforce Management", Icon: SupervisedUserCircleIcon },
         { title: "Inventory Management", Icon: WarehouseIcon },
         { title: "Sales & Billing", Icon: RequestQuoteIcon },
-        { title: "Reporting & Analytics", Icon: InsightsIcon },
+        // { title: "Reporting & Analytics", Icon: InsightsIcon },
         // { title: "Settings", Icon: SettingsIcon }
     ];
 
@@ -100,7 +100,7 @@ const Dashboard = () => {
             case "Workforce Management": return <WorkForceManagement />;
             case "Inventory Management": return <InventoryManagement />;
             case "Sales & Billing": return <SalesBilling />;
-            case "Reporting & Analytics": return <ReportingAnalytics />;
+            // case "Reporting & Analytics": return <ReportingAnalytics />;
             // case "Settings": return <Settings />;
             default: return <h1>Welcome!</h1>;
         }
@@ -160,7 +160,7 @@ const Dashboard = () => {
                     <div className={`${!open && "hidden"} flex items-center justify-between w-full origin-left duration-200 `}>
                         <div>
                             <p className='text-lg font-normal p-0 m-0'>{username}</p>
-                            <p className='text-sm font-light p-0 m-0'>{role === "Admin" ? "Administrator" : "Manager"}</p>
+                            <p className='text-sm font-light p-0 m-0'>{role}</p>
                         </div>
                         {fullyExpanded && (
                             <LogOutIcon onClick={handleLogout} className='border-2 rounded-md h-10 w-10 p-2 cursor-pointer origin-left duration-200' style={{ background: "#004385" }} />

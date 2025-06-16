@@ -22,7 +22,7 @@ const SalesTab = () => {
                 const formattedSales = Object.entries(data).map(([key, value]) => ({
                     id: key,
                     ...value
-                }));
+                })).sort((a,b) => new Date(b.purchaseDate) - new Date(a.purchaseDate));
                 setSales(formattedSales);
             } else {
                 setSales([]);

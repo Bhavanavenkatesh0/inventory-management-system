@@ -4,7 +4,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import ApprovalIcon from '@mui/icons-material/Approval';
-import SchemaIcon from '@mui/icons-material/Schema'
+import SchemaIcon from '@mui/icons-material/Schema';
 import CloseIcon from '@mui/icons-material/Close';
 import Modal from '@mui/material/Modal';
 import MenuItem from '@mui/material/MenuItem';
