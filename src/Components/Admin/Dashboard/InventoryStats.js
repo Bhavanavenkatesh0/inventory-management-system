@@ -1,8 +1,7 @@
-import { Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import { BarChart, PieChart } from '@mui/x-charts';
+import { Card } from '@mui/material';
+import { BarChart } from '@mui/x-charts';
 import ShelvesIcon from '@mui/icons-material/Shelves';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import AllInboxIcon from '@mui/icons-material/AllInbox';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import React, { useEffect, useState } from 'react';
