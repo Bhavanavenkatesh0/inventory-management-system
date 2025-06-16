@@ -182,8 +182,8 @@ const SignIn = () => {
               )
             }} />
 
-          <span className="h6 text-end forgotPassword pt-2" style={{ color: "#2d79f3", cursor: "pointer", fontWeight: "600" }}>Forgot Password?</span>
-          <Button variant="contained" style={{ background: "#004385", fontWeight: "400", fontFamily: "Roboto" }} type="submit" className="mt-3 fs-5" >SIgn In</Button>
+          {/* <span className="h6 text-end forgotPassword pt-2" style={{ color: "#2d79f3", cursor: "pointer", fontWeight: "600" }}>Forgot Password?</span> */}
+          <Button variant="contained" style={{ background: "#004385", fontWeight: "400", fontFamily: "Roboto" }} type="submit" className="mt-4 fs-5" >SIgn In</Button>
         </form>
       </div>
     </div>
